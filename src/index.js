@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import app from "./app.js";
 import connectDB from "./db/index.js";
+import { sendEmail } from "./utils/mail.js";
 dotenv.config({
   path: "./.env",
 });
@@ -25,3 +26,16 @@ connectDB()
     console.errror("MongoDB connection error", err);
     process.exit(1);
   });
+
+app.post("/send-mail", async (req, res) => {
+  await sendEmail({
+    mail: req.body.email,
+    subject: "Welcome",
+    mailgenContent: {
+      body: {
+        name: req.body.name,
+        intro: "Welcome to task manager.",
+      },
+    },
+  });
+});
